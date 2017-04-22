@@ -23,11 +23,9 @@ class PostsIndex extends Component {
   renderPosts() {
     return this.props.posts.map((post) => {
       return (
-        <ListItem key={post.id} separator={"horizontal"} justify={"between"} align={"center"} direction={"row"} >
-          <span >{post.categories}</span>
-          <Link to={"posts/" + post.id}>
-            <span align={"end"}> <strong>{post.title}</strong> </span>
-          </Link>
+        <ListItem key={post.id} justify='between'  >
+          {post.categories}
+          <Link to={"posts/" + post.id}><strong>{post.title}</strong></Link>
         </ListItem>
       );
     });
@@ -35,9 +33,9 @@ class PostsIndex extends Component {
 
   render() {
     return (
-      <Box margin={"small"}>
-        <Button  label={"Add a post"} path={"/posts/new"} />
-        <Box margin={"small"}>
+      <Box pad="small" separator="top">
+        <Button label="Add a post" path="/posts/new" />
+        <Box margin="small" separator="top">
           <Heading tag={'h3'}>Posts</Heading>
           <List>
             {this.renderPosts()}

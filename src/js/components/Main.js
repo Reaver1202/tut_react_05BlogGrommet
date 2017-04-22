@@ -11,12 +11,12 @@ export default class Main extends Component {
   render() {
     // we cann add now Header, Footer, ... and place the children (Rotue Childs) where we want
     return (
-      <App centered={true}>
-          <Title align={'center'} >
-            <Box>
-              <Heading tag={'h1'} >Blog with Grommet </Heading>
-            </Box>
-          </Title>
+      <App >
+        <Title  >
+          <Box>
+            <Heading tag={'h1'} >Blog with Grommet </Heading>
+          </Box>
+        </Title>
         {this.props.children}
       </App>
     );

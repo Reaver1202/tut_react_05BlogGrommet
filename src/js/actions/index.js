@@ -23,6 +23,8 @@ export function fetchPosts() {
 // takes properties from form and posts them to the API
 // title, categories, content
 export function createPost(props) {
+  console.log("createPost - props:");
+  console.log(props);
   // post method
   const request = axios.post(`${ROOT_URL}/posts${API_KEY}`, props);
 

@@ -1,7 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-// similar to connect function from react-redux
-// also wrap the PostsNew-Component in the export at the bottom
-import { reduxForm } from 'redux-form'
+import { connect } from 'react-redux';
 // import action creator
 import { createPost } from '../actions/index';
 // navigate to other pages
@@ -13,14 +11,62 @@ import Button from 'grommet/components/Button';
 import Form from 'grommet/components/Form';
 import FormField from 'grommet/components/FormField';
 import TextInput from 'grommet/components/TextInput';
+import Footer from 'grommet/components/Footer';
 
 class PostsNew extends Component {
+  constructor () {
+    super();
 
-  onSubmit(props) {
+    //TODO
+    console.log(this);
+    this._onSubmit = this._onSubmit.bind(this);
+    this._onInputChange = this._onInputChange.bind(this);
+    //TODO
+    console.log(this);
+
+    this.state = {
+      fields: {
+        title: '',
+        categories: '',
+        content: ''
+      },
+      blaa: "blaa"
+    };
+
+  }
+
+
+
+  /* One InputChange handler for all input elements. One update with setState (current + updated field)
+    val = value from event of form input element
+    key = string that indicates which input element has triggered the event
+  */
+  _onInputChange(val, key) {
+    let title = this.state.fields.title;
+    let categories = this.state.fields.categories;
+    let content = this.state.fields.content;
+
+    switch (key){
+      case "title": title = val; break;
+      case "categories": categories = val; break;
+      case "content": content = val; break;
+      default: console.log("no known element type");
+    }
+    // ...this.state = take current state
+    // and add fields (or update if already existing --> yes)
+    this.setState({...this.state, fields: {title, categories, content}} );
+  }
+
+
+
+  _onSubmit(event) {
+    event.preventDefault();
     // props = properties from the form
+    console.log(event);
+    console.log(this.state.fields);
 
     // creates a promise as a payload => whenever this,
-    this.props.createPost(props)
+    this.props.createPost(this.state.fields)
       // chain on a "then"-Statement
       .then( () => {
         // blog post has been created, navigate the user to the index
@@ -31,45 +77,40 @@ class PostsNew extends Component {
   }
 
   render() {
-
     // ES6 syntax
-    const { fields: {title, categories, content }, handleSubmit } = this.props;
+   const { title, categories, content  } = this.state.fields;
     /* same as (ES5):
-      const handleSubmit = this.props.handleSubmit;
-      const title = this.props.fields.title;
-      const categories = this.props.fields.categories;
-      const content = this.props.fields.content;
+      const title = this.state.fields.title;
+      const categories = this.state.fields.categories;
+      const content = this.state.fields.content;
     */
-    //console.log(title);
 
-    // handleSubmit --> from redux-form
-    // redux-form documentation
 
     return (
-      <Form onSubmit={handleSubmit(this.onSubmit.bind(this) /* bind the context of our function here to "this" of the form */)  /* handleSubmit --> from redux-form */ }>
+      <Form onSubmit={this._onSubmit}>
         <Heading tag={'h3'}>Create A New Post</Heading>
 
         <Box>
-          <FormField label={"Title"}  htmleFor={"newPost_title"} error={"enter title"} >
-            <TextInput id="newPost_title" />
+          <FormField label={"Title"}  htmlFor={"newPost_title"}  >
+            <input type='text' id="newPost_title" value={title} onChange={ (event) => this._onInputChange(event.target.value, "title") } />
           </FormField>
         </Box>
 
         <Box>
-          <FormField label={"Categories"}  htmleFor={"newPost_category"} {...categories} >
-            <TextInput id="newPost_category" />
+          <FormField label={"Categories"}  htmlFor={"newPost_category"}>
+            <input type='text' id="newPost_category" value={categories} onChange={ (event) => this._onInputChange(event.target.value, "categories") } />
           </FormField>
         </Box>
 
         <Box>
-          <FormField label={"Content"}  htmleFor={"newPost_content"} {...content} >
-            <TextInput id="newPost_content" />
+          <FormField label={"Content"}  htmlFor={"newPost_content"} >
+            <input type='text' id="newPost_content" value={content} onChange={ (event) => this._onInputChange(event.target.value, "content") } />
           </FormField>
         </Box>
-
-        <Button type={"submit"} label={"Submit"} />
-        <Button path={"/"} label={"Cancel"} />
-
+        <Footer>
+          <Button type="submit" label={"Submit"} primary={true} onClick={this._onSubmit}/>
+          <Button path={"/"} label={"Cancel"} />
+        </Footer>
       </Form>
     );
   }
@@ -84,45 +125,24 @@ PostsNew.contextTypes = {
 };
 
 // adds error properties to the defined form-properties e.g. title.error
-function validate(values){
-  const errors = {};
-
-  if (!values.title) {
-    errors.title = 'Enter a title';
-  }
-  if (!values.categories){
-    errors.categories = 'Enter categories [comma separated e.g.: a, b, c]'
-  }
-  if (!values.content){
-    errors.content = 'Enter some content';
-  }
-
-  // when errors return with one of the defined form properties below
-  // (title, categories, content)
-  return errors;
-}
+// function validate(values){
+//   const errors = {};
+//
+//   if (!values.title) {
+//     errors.title = 'Enter a title';
+//   }
+//   if (!values.categories){
+//     errors.categories = 'Enter categories [comma separated e.g.: a, b, c]'
+//   }
+//   if (!values.content){
+//     errors.content = 'Enter some content';
+//   }
+//
+//   // when errors return with one of the defined form properties below
+//   // (title, categories, content)
+//   return errors;
+// }
 
 
 // connect: 1st arg = mapStateToProps, 2nd = mapDispatchToProps
-// reduxForm: 1st = form config, 2nd = mapStateToProps, 3rd = mapDispatchToProps
-export default reduxForm({
-  // configuration to redux-form, letter we pass to reduxForm
-
-  // unique token/name
-  form: 'PostsNewForm',
-  // watch for these inputs --> now this.props.fields.title
-  fields: ['title', 'categories', 'content'],
-  validate
-/* behind the scenes
-  - user types somethin in....record it on application state
-  state === {
-    form: {
-      PostsNewForm: {
-        title: '...',
-        categories: '....',
-        content: '...'
-      }
-    }
-  }
-  */
-}, null, { createPost } )(PostsNew);
+export default connect( null, { createPost } )(PostsNew);
