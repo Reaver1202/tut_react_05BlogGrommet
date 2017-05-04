@@ -14,9 +14,13 @@ import Label from 'grommet/components/Button';
 
 class PostsIndex extends Component {
 
+// TODO Doku
+// PostsIndex.proptypes { /* Properties die diese Component empfangen kann */}
+
   // React Lifecycle method
   // componentWillMount: called by React when component is about to be rendered for the first time, only!
   componentWillMount() {
+    console.log("PostsIndex: componentWillMount")
     this.props.fetchPosts();
   }
 
@@ -32,6 +36,9 @@ class PostsIndex extends Component {
   }
 
   render() {
+    console.log("PostsIndex: render")
+    console.log(this.props.posts)
+
     return (
       <Box pad="small" separator="top">
         <Button label="Add a post" path="/posts/new" />
@@ -46,11 +53,19 @@ class PostsIndex extends Component {
   }
 }
 
+
+/* TODO explain
+  - with connect below this method is used
+  - it takes from redux state (state) the data
+  - here all posts are now mapped to the posts property of props of this component
+    --> now this.props.posts can be used
+*/
 function mapStateToProps(state) {
   return { posts: state.posts.all};
 }
 
-/* minimize code --> shortcut
+/* minimize code --> shortcut in connect function with "{ fetchPosts }"
+  - TODO
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({ fetchPosts },  dispatch);
 }

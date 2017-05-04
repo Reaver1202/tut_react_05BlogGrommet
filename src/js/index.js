@@ -1,16 +1,18 @@
-// import 'whatwg-fetch';
-// import { polyfill as promisePolyfill } from 'es6-promise';
+import 'whatwg-fetch';
+import { polyfill as promisePolyfill } from 'es6-promise';
+promisePolyfill();
+
+import '../scss/index.scss';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import '../scss/index.scss';
-
 import App from './App';
 
-// promisePolyfill();
+let element = document.getElementById('content');
 
-const element = document.getElementById('content');
-ReactDOM.render(<App />, element);
+ReactDOM.render((
+  <App />
+), element);
 
 document.body.classList.remove('loading');

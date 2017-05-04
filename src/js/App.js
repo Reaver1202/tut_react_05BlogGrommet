@@ -16,18 +16,21 @@ import { Router, browserHistory } from 'react-router';
 // define available routes:
 import routes from './routes';
 
+
+import store from './store';
+
 // add promise as middleware
 // makes sure, that all of our action flow through the "promise"-middleware before reaching "producers"
-import promise from 'redux-promise';
+// import promise from 'redux-promise';
 
 
-const createStoreWithMiddleware = applyMiddleware(
-  promise
-)(createStore);
+// const createStoreWithMiddleware = applyMiddleware(
+//   promise
+// )(createStore);
 
 
 export default () => (
-  <Provider store={createStoreWithMiddleware(reducers)}>
+  <Provider store={store}>
     <Router
       history={browserHistory}
       routes={routes}

@@ -1,4 +1,6 @@
-
+/*
+  - define all possible Frontend routes to be navigated
+*/
 import React from 'react';
 import { Route, IndexRoute } from 'react-router';
 
@@ -12,6 +14,7 @@ const Greeting = () =>  {
   return <div> Hey There!</div>
 }
 
+//TODO Grommet Schreibweise as JSON --> see react-router
 export default (
   <Route path="/" component={Main} >               // ../          App
     // nested routes --> stack the path
