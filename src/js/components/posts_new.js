@@ -17,15 +17,11 @@ class PostsNew extends Component {
   constructor () {
     super();
 
-    //TODO
-    console.log(this);
     // https://www.sitepoint.com/bind-javascripts-this-keyword-react/
     // binds the "this" from the component "PostsNew" to this function.
     // Now inside this function, e.g. this.setState() is possible
     this._onSubmit = this._onSubmit.bind(this);
     this._onInputChange = this._onInputChange.bind(this);
-    //TODO
-    console.log(this);
 
     this.state = {
       fields: {
@@ -80,6 +76,8 @@ class PostsNew extends Component {
       noErrors = false;
     }
     if (noErrors){
+      console.log("noError")
+      console.log(this.props);
       // creates a promise as a payload => whenever this,
       this.props.createPost(this.state.fields)
         // chain on a "then"-Statement
@@ -92,8 +90,6 @@ class PostsNew extends Component {
     } else {
       this.setState({errors})
     }
-
-
   }
 
   render() {

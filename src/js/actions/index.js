@@ -1,8 +1,8 @@
-import axios from 'axios';
 import { headers, buildQuery, processStatus } from 'grommet/utils/Rest';
 
 // define action type
 export const FETCH_POSTS = 'FETCH_POSTS';
+export const FETCH_POSTS_FAILURE = 'FETCH_POSTS_FAILURE';
 export const CREATE_POST = 'CREATE_POST';
 export const FETCH_POST = 'FETCH_POST';
 export const DELETE_POST = 'DELETE_POST';
@@ -10,86 +10,48 @@ export const DELETE_POST = 'DELETE_POST';
 const ROOT_URL = 'http://reduxblog.herokuapp.com/api';
 const API_KEY = '?key=tmhpe1234321';
 
-/* get all blog posts */
+/* get all blog posts
+  - detailed logging for understanding the async flow between component, action and reducer
+*/
 export function fetchPosts() {
-  console.log("fetchPosts() call")
-  // const request1 = axios.get(`${ROOT_URL}/posts${API_KEY}`);
-
-  // return new Promise((resolve, reject) => {
-  //   const options = { method: 'GET' };
-  //
-  //   fetch(`${ROOT_URL}/posts${API_KEY}`, options)
-  //   .then(processStatus)
-  //   .then(response => {
-  //     console.log("fetchPosts: response=<"+response+">");
-  //     if (response.error) {
-  //       console.log("store.js fetchPosts: unexpected error");
-  //       reject('An unexpected error');
-  //     } else {
-  //       console.log("resolve response")
-  //       resolve();
-  //     }
-  //   });
-  // });
+  console.log("fetchPosts() call");
 
   return function (dispatch){
+    console.log("dispatch fetchPosts call");
 
-
-  const options = { method: 'GET' };
-  const request2 = fetch(`${ROOT_URL}/posts${API_KEY}`, options)
-    .then(processStatus)
-    // .then(response => response.json());
-
-    .then(response => response.json())
-    .then(result => dispatch(getPosts(result)));
-
-    // .then(response => {
-    //
-    //     console.log({response});
-    //     let ret = {
-    //       type: FETCH_POSTS,
-    //       payload: response.json()
-    //     };
-    //     console.log(ret)
-    //     return ret;
-    // });
-
-    // .then(response => response.json())
-    // .then(result =>
-    //   {
-    //     console.log({result});
-    //     let ret = {
-    //       type: FETCH_POSTS,
-    //       payload: {result}
-    //     };
-    //     console.log(ret)
-    //     return ret;
-    //   }
-    // ).catch(error => {
-    //   console.log(error);
-    // });
-  //
-  //
-  // console.log({"id":85590,"title":"asda","categories":"dasd","content":"asdas"});
-  // return {"id":85590,"title":"asda","categories":"dasd","content":"asdas"};
-
-
-  // console.log(request1);
-  console.log(request2);
-  // return {
-  //   type: FETCH_POSTS,
-  //   // redux-promise will unwrapp the promise and the data will flow throughall of our reducers
-  //   payload: request2
-  // };
+    const options = { method: 'GET' };
+    fetch(`${ROOT_URL}/posts${API_KEY}`, options)
+      .then(processStatus => {
+        console.log("processStatus call");
+        console.log(processStatus);
+        //TODO what happens when error occurs
+        // Response { type: "cors", url: "http://reduxblog.herokuapp.com/ap/p…", redirected: false, status: 404, ok: false, statusText: "Not Found", headers: Headers, bodyUsed: false }
+        return processStatus;
+      })
+      .then(response => {
+        console.log("response call");
+        console.log(response);
+        return response.json();
+      }) // returns a promise --> result
+      .then(results => {
+        // instead of middleware, that handles the promise
+        console.log("results call");
+        console.log(results);
+        // {"id":85590,"title":"asda","categories":"dasd","content":"asdas"}
+        return dispatch({ // dispatches the action to the reducer
+          type: FETCH_POSTS,
+          payload: results
+        });
+      })
+      .catch(error => {
+        console.log("error call");
+        console.log(error);
+        return dispatch({
+          type: FETCH_POSTS_FAILURE,
+          error: error
+        })
+      });
     }
-}
-
-export function getPosts (results) {
-  return {
-    type: FETCH_POSTS,
-    // redux-promise will unwrapp the promise and the data will flow throughall of our reducers
-    payload: results
-  };
 }
 
 /* create a single blog post */
@@ -98,31 +60,73 @@ export function getPosts (results) {
 export function createPost(props) {
   console.log("createPost - props:");
   console.log(props);
-  // post method
-  const request = axios.post(`${ROOT_URL}/posts${API_KEY}`, props);
 
+  // return function (dispatch){
+  //   console.log("dispatch call");
+    // const data = (typeof props === 'object') ?
+    //   JSON.stringify(props) : props;
+    const options = { method: 'POST', body: props };
+    const request = fetch(`${ROOT_URL}/posts${API_KEY}`, options)
+      .then(processStatus);
+      // .then(response => {
+      //   console.log("response call");
+      //   console.log(response);
+      //   return response.json();
+      // }) // returns a promise --> result
+      // .then(results => { return {
+      //   // instead of middleware, that handles the promise
+      //   // console.log("results call");
+      //   // console.log(results);
+      //   // {"id":85590,"title":"asda","categories":"dasd","content":"asdas"}
+      //   // dispatch({ // dispatches the action to the reducer
+      //     type: CREATE_POST,
+      //     payload: results
+      //   }})
+      //   // return results
+      // // })
+      // .catch(error => {
+      //   console.log("error call");
+      //   console.log(error);
+      //   return dispatch({
+      //     type: FETCH_POSTS_FAILURE,
+      //     error: error
+      //   })
+      // });
+    // }
+
+// TODO ERROR TypeError: this.props.createPost(...).then is not a function[Weitere Informationen]
+// immerhin kommt nicht mehr this.props.createPost(...) is undefined.
+// Aber das heißt zuvor hat eine Function wohl "undefined" oder "null" zurückgegeben.
   return {
     type: CREATE_POST,
     payload: request
   };
 }
 
-/* get a single blog post */
+/* get a single blog post
+  - see detailed explanations in fetchPosts() method. Here the minimal code is used.
+*/
 export function fetchPost(id) {
-  const request = axios.get(`${ROOT_URL}/posts/${id}${API_KEY}`);
-
-  return {
-    type: FETCH_POST,
-    payload: request
-  };
+  console.log("fetchPost() call");
+  return function (dispatch){
+    const options = { method: 'GET' };
+    fetch(`${ROOT_URL}/posts/${id}${API_KEY}`, options)
+      .then(processStatus)
+      .then(response => response.json())
+      .then(results => dispatch( { type: FETCH_POST, payload: results } ) )
+      .catch(error => dispatch( { type: FETCH_POSTS_FAILURE, error: error } ) );
+  }
 }
 
 /* delete a single blog post */
 export function deletePost(id) {
-  const request = axios.delete(`${ROOT_URL}/posts/${id}${API_KEY}`);
-
-  return {
-    type: DELETE_POST,
-    payload: request
-  };
+  console.log("deletePost() call");
+  return function (dispatch){
+    const options = { method: 'DELETE' };
+    fetch(`${ROOT_URL}/posts/${id}${API_KEY}`, options)
+      .then(processStatus)
+      .then(response => response.json())
+      .then(results => dispatch( { type: DELETE_POST, payload: results } ) )
+      .catch(error => dispatch( { type: FETCH_POSTS_FAILURE, error: error } ) );
+  }
 }

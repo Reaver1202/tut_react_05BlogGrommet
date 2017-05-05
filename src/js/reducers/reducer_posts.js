@@ -1,7 +1,7 @@
 // TODO Reduces the eventually oversized data object to use only the wanted data
 // import action type from action
 // the action returns a "promise" with an action.type and action.payload
-import { FETCH_POSTS, FETCH_POST } from '../actions/index';
+import { FETCH_POSTS, FETCH_POST, FETCH_POSTS_FAILURE, CREATE_POST } from '../actions/index';
 
 // define state
 // List of blog posts
@@ -15,7 +15,7 @@ export default function(state = INITIAL_STATE, action) {
 
     case FETCH_POST:
       console.log("FETCH_POST");
-      return { ...state, post: action.payload.data };
+      return { ...state, post: action.payload };
 
     case FETCH_POSTS:
 
@@ -26,6 +26,14 @@ export default function(state = INITIAL_STATE, action) {
       // take current state and add in "all" as new object
       console.log(action.payload)
       return { ...state, all:action.payload || [{"id":85590,"title":"asda","categories":"dasd","content":"asdas"}] };
+
+    case FETCH_POSTS_FAILURE:
+      console.log("An unexpected error occured during fetchPosts");
+      console.log(action.error);
+
+    case CREATE_POST:
+      console.log("CREATE_POST")
+      // return action;
 
     default:
       return state;
