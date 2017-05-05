@@ -1,12 +1,12 @@
 // TODO Reduces the eventually oversized data object to use only the wanted data
 // import action type from action
 // the action returns a "promise" with an action.type and action.payload
-import { FETCH_POSTS, FETCH_POST, FETCH_POSTS_FAILURE, CREATE_POST } from '../actions/index';
+import { FETCH_POSTS, FETCH_POST, FETCH_POSTS_FAILURE, CREATE_POST, CREATE_POST_PROCESS } from '../actions/index';
 
 // define state
 // List of blog posts
 // active blog post
-const INITIAL_STATE = { all: [], post: null };
+const INITIAL_STATE = { all: [], post: null, req: null };
 
 export default function(state = INITIAL_STATE, action) {
   console.log("reducer_posts: new action:")
@@ -30,10 +30,18 @@ export default function(state = INITIAL_STATE, action) {
     case FETCH_POSTS_FAILURE:
       console.log("An unexpected error occured during fetchPosts");
       console.log(action.error);
+      // return { ...state, errorMsg: "An unexpected error occured during fetchPosts" }
+      alert("An unexpected error occured during fetchPosts")
+      break;
 
     case CREATE_POST:
-      console.log("CREATE_POST")
-      // return action;
+      console.log("CREATE_POST - req ")
+      console.log(action.req)
+      return { ...state, req: action.req };
+
+    case CREATE_POST_PROCESS:
+      console.log("..in progress")
+      return state;
 
     default:
       return state;

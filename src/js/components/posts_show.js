@@ -20,6 +20,9 @@ class PostsShow extends Component {
       this.props.fetchPost(this.props.params.id);
   }
 
+  // TODO no promise in return when using dispatch method from action to reducers
+  // Unable to get property 'then' of undefined or null reference
+  // the dispatch function or so is sent back --> has no ".then()"
   onDeleteClick() {
     // call action creator imported above
     this.props.deletePost(this.props.params.id)

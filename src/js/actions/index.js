@@ -6,6 +6,7 @@ export const FETCH_POSTS_FAILURE = 'FETCH_POSTS_FAILURE';
 export const CREATE_POST = 'CREATE_POST';
 export const FETCH_POST = 'FETCH_POST';
 export const DELETE_POST = 'DELETE_POST';
+export const CREATE_POST_PROCESS = 'CREATE_POST_PROCESS';
 
 const ROOT_URL = 'http://reduxblog.herokuapp.com/api';
 const API_KEY = '?key=tmhpe1234321';
@@ -58,49 +59,37 @@ export function fetchPosts() {
 // takes properties from form and posts them to the API
 // title, categories, content
 export function createPost(props) {
-  console.log("createPost - props:");
-  console.log(props);
-
-  // return function (dispatch){
-  //   console.log("dispatch call");
-    // const data = (typeof props === 'object') ?
-    //   JSON.stringify(props) : props;
-    const options = { method: 'POST', body: props };
+  console.log("createPost call");
+  return function (dispatch){
+    console.log("dispatch call");
+    const data = JSON.stringify(props);
+    console.log("request body data:");
+    console.log(data);
+    const options = { method: 'POST', headers: headers, body: data };
     const request = fetch(`${ROOT_URL}/posts${API_KEY}`, options)
-      .then(processStatus);
-      // .then(response => {
-      //   console.log("response call");
-      //   console.log(response);
-      //   return response.json();
-      // }) // returns a promise --> result
-      // .then(results => { return {
-      //   // instead of middleware, that handles the promise
-      //   // console.log("results call");
-      //   // console.log(results);
-      //   // {"id":85590,"title":"asda","categories":"dasd","content":"asdas"}
-      //   // dispatch({ // dispatches the action to the reducer
-      //     type: CREATE_POST,
-      //     payload: results
-      //   }})
-      //   // return results
-      // // })
-      // .catch(error => {
-      //   console.log("error call");
-      //   console.log(error);
-      //   return dispatch({
-      //     type: FETCH_POSTS_FAILURE,
-      //     error: error
-      //   })
-      // });
-    // }
-
-// TODO ERROR TypeError: this.props.createPost(...).then is not a function[Weitere Informationen]
-// immerhin kommt nicht mehr this.props.createPost(...) is undefined.
-// Aber das heißt zuvor hat eine Function wohl "undefined" oder "null" zurückgegeben.
-  return {
-    type: CREATE_POST,
-    payload: request
-  };
+      .then(processStatus)
+      .then(response => response.json()) // returns a promise --> result
+      .then(results => { // TODO sollte nicht mal nötig sein
+        // instead of middleware, that handles the promise
+        console.log("results call");
+        console.log(results);
+        // {"id":85590,"title":"asda","categories":"dasd","content":"asdas"}
+        return dispatch({ // dispatches the action to the reducer
+          type: CREATE_POST,
+          req: results
+        });
+      })
+      .catch(error => {
+        console.log("error call");
+        console.log(error);
+        return dispatch({
+          type: FETCH_POSTS_FAILURE,
+          error: error
+        });
+      });
+      return request;// return the whole promise {req: Object {...}, type: "CREATE_POST"}
+      // to be able to use ".then()" in the component for further processing like "router.push('/')"
+    }
 }
 
 /* get a single blog post
@@ -123,10 +112,12 @@ export function deletePost(id) {
   console.log("deletePost() call");
   return function (dispatch){
     const options = { method: 'DELETE' };
-    fetch(`${ROOT_URL}/posts/${id}${API_KEY}`, options)
+    const request = fetch(`${ROOT_URL}/posts/${id}${API_KEY}`, options)
       .then(processStatus)
       .then(response => response.json())
-      .then(results => dispatch( { type: DELETE_POST, payload: results } ) )
+      .then(results => dispatch( { type: DELETE_POST, payload: results } ) )  // TODO nicht nötig
       .catch(error => dispatch( { type: FETCH_POSTS_FAILURE, error: error } ) );
+    return request; // return the whole promise {payload: Object {...}, type: "DELETE_POST"}
+    // to be able to use ".then()" in the component for further processing like "router.push('/')"
   }
 }

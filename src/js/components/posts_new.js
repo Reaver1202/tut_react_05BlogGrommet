@@ -78,14 +78,23 @@ class PostsNew extends Component {
     if (noErrors){
       console.log("noError")
       console.log(this.props);
+
+
+      // TODO no promise in return when using dispatch method from action to reducers
+      // Unable to get property 'then' of undefined or null reference
+      // the dispatch function or so is sent back --> has no ".then()"
+
       // creates a promise as a payload => whenever this,
-      this.props.createPost(this.state.fields)
-        // chain on a "then"-Statement
-        .then( () => {
+      let req= this.props.createPost(this.state.fields);
+      console.log("onSubmit - req")
+      console.log(req);
+      // chain on a "then"-Statement
+      req.then( (response) => {
+          console.log("now then...")
+          console.log(response) // the promise of {req: Object {...}, type: "CREATE_POST"}
           // blog post has been created, navigate the user to the index
           // We navigateby calling this.context.router.push with the new path to navigate to.
           this.context.router.push('/');
-
         });
     } else {
       this.setState({errors})
