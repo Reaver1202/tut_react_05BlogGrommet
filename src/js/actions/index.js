@@ -8,8 +8,8 @@ export const FETCH_POST = 'FETCH_POST';
 export const DELETE_POST = 'DELETE_POST';
 export const CREATE_POST_PROCESS = 'CREATE_POST_PROCESS';
 
-const ROOT_URL = 'http://reduxblog.herokuapp.com/api';
-const API_KEY = '?key=tmhpe1234321';
+const ROOT_URL = 'http://localhost:8080/api';//'http://reduxblog.herokuapp.com/api';
+const API_KEY = '';//'?key=tmhpe1234321';
 
 /* get all blog posts
   - detailed logging for understanding the async flow between component, action and reducer
@@ -21,7 +21,7 @@ export function fetchPosts() {
     console.log("dispatch fetchPosts call");
 
     const options = { method: 'GET' };
-    fetch(`${ROOT_URL}/posts${API_KEY}`, options)
+    fetch(`${ROOT_URL}/posts`, options)
       .then(processStatus => {
         console.log("processStatus call");
         console.log(processStatus);

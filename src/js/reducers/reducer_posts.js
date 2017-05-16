@@ -32,7 +32,7 @@ export default function(state = INITIAL_STATE, action) {
       console.log(action.error);
       // return { ...state, errorMsg: "An unexpected error occured during fetchPosts" }
       alert("An unexpected error occured during fetchPosts")
-      break;
+      return state;
 
     case CREATE_POST:
       console.log("CREATE_POST - req ")
