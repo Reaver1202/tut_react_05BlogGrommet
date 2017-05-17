@@ -22,8 +22,8 @@ const app = express()
 
 // >>> enable CORS on ExpressJS Server
 //  to be able to answer to client from another domain
-//  e.g. client localhost:3000 requests server on localhost:8080 
-//  https://enable-cors.org/server_expressjs.html
+//  e.g. client localhost:3000 requests server on localhost:8080
+//  see https://enable-cors.org/server_expressjs.html
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
