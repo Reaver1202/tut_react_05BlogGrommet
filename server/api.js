@@ -1,8 +1,26 @@
+// imitates the API from http://reduxblog.herokuapp.com/
+
 import express from 'express';
 import { addPost, getPosts, getPost, removePost } from './data';
 
 const router = express.Router();
 
+/* Fetches all Blog Posts
+Example Response
+[
+  { id: 1,
+    title: 'Hi!',
+    categories: 'Computer, Friends',
+    content: 'Post about Friends'
+  },
+  {
+    id: 2,
+    title: 'New Post',
+    categories: 'Candy',
+    content: 'Post about Candy'
+  }
+]
+*/
 router.get('/posts', (req, res) => {
   console.log("/api/posts call")
   getPosts().then( (data) => {
@@ -12,6 +30,15 @@ router.get('/posts', (req, res) => {
   });
 });
 
+/* Fetches a single blog post with the given ID. Includes the blog's content.
+Example Resposne:
+{
+  id: 1,
+  title: 'Hi!',
+  categories: 'Computer, Friends',
+  content: 'Blog post content'
+}
+*/
 router.get('/posts/:id', (req, res) => {
   console.log("/api/posts:id call")
   getPost(req.params.id).then( (data) => {
@@ -26,7 +53,15 @@ router.get('/posts/:id', (req, res) => {
   });
 });
 
-
+/* Creates a new blog post entry. Returns the created blog post with the ID
+Example Resposne:
+{
+  id: 1,
+  title: 'Hi!',
+  categories: 'Computer, Friends',
+  content: 'Blog post content'
+}
+*/
 router.post('/posts', (req, res) => {
   const { title, categories, content } = req.body;
   if (!title || !categories || !content) {
@@ -38,7 +73,15 @@ router.post('/posts', (req, res) => {
   }
 });
 
-
+/* Deletes a single blog post with the given ID. Returns the post
+Example Resposne:
+{
+  id: 1,
+  title: 'Hi!',
+  categories: 'Computer, Friends',
+  content: 'Blog post content'
+}
+*/
 router.delete('/posts/:id', (req, res) => {
   removePost(req.params.id).then((data) => {
     if (data.deleted) {

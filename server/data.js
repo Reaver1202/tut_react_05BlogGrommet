@@ -1,4 +1,4 @@
-
+// base data when server starts
 const posts = [
   {
     "id": 1,
@@ -78,7 +78,9 @@ export function getPost(id) {
   return Promise.resolve({ post });
 }
 
-/* quick and dirty */
+/* quick and dirty
+  - returns an unique id within the current posts to create a new post
+*/
 function createNewId(){
   let newId;
   // not more than 200 Blog Posts possible
@@ -98,6 +100,7 @@ function createNewId(){
   return newId;
 }
 
+// adds a new post
 export function addPost (title,categories,content) {
   // TODO what happens when all 200 IDs are in use --> replace one?
   let newId = createNewId();
@@ -115,7 +118,7 @@ export function addPost (title,categories,content) {
   return newPost;
 }
 
-
+// removes the requested post
 export function removePost(id) {
   let post;
   let deleted = false;

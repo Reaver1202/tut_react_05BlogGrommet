@@ -10,21 +10,28 @@ import Paragraph from 'grommet/components/Paragraph';
 
 class PostsShow extends Component {
   componentWillMount() {
-      //try to fetchPosts
+      //try to fetchPost
       /*
         1. take id from URL
         2. fetchPost makes the backend request for this specific Post
-        3. reduce/ picks up data
-        4. maked sure the we can show the post inside of here
+        3. reduce / picks up data
+        4. maked sure we can show the post inside of here
       */
+
+      // run a action method from /actions/index.js to view a single post
+      //TODO
+      // --> action --> requests single data --> returns a action object --> will be dispatech by middleware (thunk) and passed to all reducers
+      // --> reducers --> updates application redux state --> data is available in this component via this.props.<ReducerVariable> (posts.post)
       this.props.fetchPost(this.props.params.id);
   }
 
-  // TODO no promise in return when using dispatch method from action to reducers
-  // Unable to get property 'then' of undefined or null reference
-  // the dispatch function or so is sent back --> has no ".then()"
   onDeleteClick() {
-    // call action creator imported above
+
+    // run a action method from /actions/index.js to create a new post
+    //TODO
+    // --> action --> sends data --> returns a action object --> will be dispatech by middleware (thunk) and passed to all reducers
+    // --> reducers --> updates application redux state --> data is available in this component via this.props.<ReducerVariable> (posts)
+    // a promise is returned to make a then-chain after the post was deleted
     this.props.deletePost(this.props.params.id)
       .then( () => {
         this.context.router.push('/');
@@ -37,11 +44,13 @@ class PostsShow extends Component {
     const { post } = this.props;
 
     //console.log(post); // you see, that there is first a null and then the content: 1st render without data, 2nd render when request has been sent
-    // AJAX Spinner
+    // AJAX Spinner to show loading as long as the data is not fully available
     if (!post){
       return <div>Loading... </div>
     };
 
+    // renders a link back to the startpage, a button to delete the current blog post
+    // and some components to display the requested blog post
     return (
       <Box margin={"small"}>
         <Link to="/">Back to Index</Link>
@@ -57,12 +66,14 @@ class PostsShow extends Component {
   }
 }
 
+// make router availble
 PostsShow.contextTypes = {
   router: PropTypes.object // now this.context.router is available
 };
 
+// map a piece of the redux application state to the properties of the component´s properties
 function mapStateToProps(state) {
   return { post: state.posts.post };
 }
-
+// connect the state/props and the action creators with the component
 export default connect(mapStateToProps, {fetchPost, deletePost })(PostsShow);

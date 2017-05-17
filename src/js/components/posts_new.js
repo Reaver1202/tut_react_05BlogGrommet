@@ -14,6 +14,7 @@ import TextInput from 'grommet/components/TextInput';
 import Footer from 'grommet/components/Footer';
 
 class PostsNew extends Component {
+  // constructor to bind specific method to "this" and to set the component state
   constructor () {
     super();
 
@@ -23,6 +24,7 @@ class PostsNew extends Component {
     this._onSubmit = this._onSubmit.bind(this);
     this._onInputChange = this._onInputChange.bind(this);
 
+    // state with input data to have a controlled form
     this.state = {
       fields: {
         title: '',
@@ -35,7 +37,8 @@ class PostsNew extends Component {
 
 
 
-  /* One InputChange handler for all input elements. One update with setState (current + updated field)
+  /*
+    One InputChange handler for all input elements. One update with setState (current + updated field)
     val = value from event of form input element
     key = string that indicates which input element has triggered the event
   */
@@ -50,19 +53,21 @@ class PostsNew extends Component {
       case "content": content = val; errors.content=undefined; break;
       default: console.log("no known element type");
     }
-    // ...this.state = take current state
-    // and add fields (or update if already existing --> yes)
+    // add fields (or update if already existing --> yes)
     this.setState({fields: {title, categories, content}} );
   }
 
 
-
+  /*
+    Event handler to check and submit the form
+  */
   _onSubmit(event) {
     event.preventDefault();
     console.log(this.state.fields);
+
+    // check for errors
     let errors = {};
     let noErrors = true;
-
     if (!this.state.fields.title){
       errors.title = 'Please enter a title';
       noErrors = false;
@@ -75,28 +80,27 @@ class PostsNew extends Component {
       errors.content = "Please enter some content";
       noErrors = false;
     }
+
     if (noErrors){
-      console.log("noError")
-      console.log(this.props);
+      console.log("posts_new.js - noError")
 
-
-      // TODO no promise in return when using dispatch method from action to reducers
-      // Unable to get property 'then' of undefined or null reference
-      // the dispatch function or so is sent back --> has no ".then()"
-
-      // creates a promise as a payload => whenever this,
+      // run a action method from /actions/index.js to create a new post
+      //TODO
+      // --> action --> sends data --> returns a action object --> will be dispatech by middleware (thunk) and passed to all reducers
+      // --> reducers --> updates application redux state --> data is available in this component via this.props.<ReducerVariable> (posts)
       let req= this.props.createPost(this.state.fields);
-      console.log("onSubmit - req")
+      console.log("posts_new.js - onSubmit - req")
       console.log(req);
       // chain on a "then"-Statement
       req.then( (response) => {
-          console.log("now then...")
-          console.log(response) // the promise of {req: Object {...}, type: "CREATE_POST"}
-          // blog post has been created, navigate the user to the index
-          // We navigateby calling this.context.router.push with the new path to navigate to.
-          this.context.router.push('/');
-        });
+        console.log("posts_new.js - now then...")
+        console.log(response) // the promise of {req: Object {...}, type: "CREATE_POST"}
+        // blog post has been created, navigate the user to the index
+        // We navigate by calling this.context.router.push with the new path to navigate to.
+        this.context.router.push('/');
+      });
     } else {
+      // errors will be displayed beneath the input fields
       this.setState({errors})
     }
   }
@@ -111,7 +115,7 @@ class PostsNew extends Component {
       const content = this.state.fields.content;
     */
 
-
+    // renders a simple form
     return (
       <Form title="Create a new Blog Entry" onSubmit={this._onSubmit}>
         <Heading tag={'h3'}>Create A New Post</Heading>
@@ -145,31 +149,10 @@ class PostsNew extends Component {
 // context´s type property --> try to avoid using context! --> only for router as here
 // defining an object of the PostsNew class
 // get access on our context called  router
-// React is then goining to search all of this component´s parents until it finds a component that has a piece of context called router.
+// React is then going to search all of this component´s parents until it finds a component that has a piece of context called router.
 PostsNew.contextTypes = {
   router: PropTypes.object // now this.context.router is available
 };
 
-// adds error properties to the defined form-properties e.g. title.error
-// function validate(values){
-//   console.log(values);
-//   const errors = {};
-//
-//   if (!values.title) {
-//     errors.title = 'Enter a title';
-//   }
-//   if (!values.categories){
-//     errors.categories = 'Enter categories [comma separated e.g.: a, b, c]'
-//   }
-//   if (!values.content){
-//     errors.content = 'Enter some content';
-//   }
-//
-//   // when errors return with one of the defined form properties below
-//   // (title, categories, content)
-//   return errors;
-// }
-
-
-// connect: 1st arg = mapStateToProps, 2nd = mapDispatchToProps
+// connect: 1st arg = mapStateToProps, 2nd = mapDispatchToProps, then the component class
 export default connect( null, { createPost } )(PostsNew);

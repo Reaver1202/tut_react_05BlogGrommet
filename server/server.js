@@ -1,6 +1,6 @@
 /*
   This is the server where the web application is running.
-  - Look in package.json which npm operations runs this script - e.g. npm start or npm run dev-server
+  - Look in package.json which npm operations runs this script - e.g. npm run dev-server
 */
 import express from 'express';
 import path from 'path';

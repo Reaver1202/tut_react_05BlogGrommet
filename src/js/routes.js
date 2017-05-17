@@ -1,9 +1,9 @@
 /*
-  - define all possible Frontend routes to be navigated
+  - define all possible Frontend routes to be navigated via react-router
 */
 import React from 'react';
 import { Route, IndexRoute } from 'react-router';
-
+// custom componets or containers
 import Main from './components/Main';
 import PostsIndex from './components/posts_index';
 import PostsNew from './components/posts_new';
@@ -16,13 +16,13 @@ const Greeting = () =>  {
 
 //TODO Grommet Schreibweise as JSON --> see react-router
 export default (
-  <Route path="/" component={Main} >               // ../          App
+  <Route path="/" component={Main} >                  // ../          App
     // nested routes --> stack the path
     // whenever a nested route is used --> the nested component is passed to the parent as "this.props.children"
     // e.g. Greeting passed to App  => App has
-    <IndexRoute component={PostsIndex} />         // ../          App, PostsIndex
-    <Route path="greet" component={Greeting} />   // ../greet     App, Greeting
-    <Route path="posts/new" component={PostsNew} />   // ../greet     App, Greeting
-    <Route path="posts/:id" component={PostsShow} /> // this.props.params.id  --> params says, that there are parameters in URL
+    <IndexRoute component={PostsIndex} />             // ../          App, PostsIndex
+    <Route path="greet" component={Greeting} />       // ../greet     App, Greeting
+    <Route path="posts/new" component={PostsNew} />   // ../posts/new     App, PostsNew
+    <Route path="posts/:id" component={PostsShow} />  // this.props.params.id  --> params says, that there are parameters in URL
   </Route>
 );
