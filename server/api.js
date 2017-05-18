@@ -24,7 +24,7 @@ Example Response
 router.get('/posts', (req, res) => {
   console.log("/api/posts call")
   getPosts().then( (data) => {
-    console.log("Response:")
+    console.log("Response GET all:")
     console.log(data.posts)
     res.json(data.posts)
   });
@@ -46,7 +46,7 @@ router.get('/posts/:id', (req, res) => {
       console.log("Nothing found for id: " + req.params.id)
       res.status(404).end();
     } else {
-      console.log("Response:")
+      console.log("Response GET id "+ req.params.id+":")
       console.log(data.post)
       res.json(data.post)
     }
@@ -69,6 +69,8 @@ router.post('/posts', (req, res) => {
     res.status(401).end();
   } else {
     let newPost = addPost(title,categories,content);
+      console.log("Response POST new:")
+      console.log(newPost)
     res.json(newPost);
   }
 });
@@ -85,7 +87,7 @@ Example Resposne:
 router.delete('/posts/:id', (req, res) => {
   removePost(req.params.id).then((data) => {
     if (data.deleted) {
-      console.log("Response:")
+      console.log("Response DELETE id "+req.params.id+":")
       console.log(data.post)
       res.json(data.post)
     } else {

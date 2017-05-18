@@ -11,8 +11,10 @@ export const DELETE_POST = 'DELETE_POST';
 export const DELETE_POST_FAILURE = 'DELETE_POST_FAILURE';
 export const CREATE_POST_PROCESS = 'CREATE_POST_PROCESS';
 
-//TODO realize API with python
-const ROOT_URL = 'http://localhost:8080/api';//'http://reduxblog.herokuapp.com/api';
+//TODO choose one of the following endpoints
+const ROOT_URL = 'http://localhost:4000/api';               // Python API --> /server-python
+// const ROOT_URL = 'http://localhost:8080/api';            // ExpressJS API --> /server
+// const ROOT_URL = 'http://reduxblog.herokuapp.com/api';   // online API
 const API_KEY = '';//'?key=tmhpe1234321';
 
 /*

@@ -62,10 +62,13 @@ const posts = [
   }
 ];
 
+// >>> fetch all posts
 export function getPosts() {
   return Promise.resolve({ posts });
 }
 
+
+// >>> fetch a specific post
 export function getPost(id) {
   let post;
   posts.some((p) => {
@@ -78,7 +81,9 @@ export function getPost(id) {
   return Promise.resolve({ post });
 }
 
-/* quick and dirty
+
+/* >>> helper to get new ID in postsList
+  - quick and dirty
   - returns an unique id within the current posts to create a new post
 */
 function createNewId(){
@@ -93,6 +98,7 @@ function createNewId(){
       }
     });
     if (!found) {
+      // if found is still false, the current i value is not already used as id
       newId = i;
       break;
     }
@@ -100,7 +106,8 @@ function createNewId(){
   return newId;
 }
 
-// adds a new post
+
+// >>> adds a new post
 export function addPost (title,categories,content) {
   // TODO what happens when all 200 IDs are in use --> replace one?
   let newId = createNewId();
@@ -118,7 +125,8 @@ export function addPost (title,categories,content) {
   return newPost;
 }
 
-// removes the requested post
+
+// >>> removes the requested post
 export function removePost(id) {
   let post;
   let deleted = false;
@@ -128,7 +136,7 @@ export function removePost(id) {
     console.log("position: " + position)
     if (p.id+"" === id) {
       post = p;
-      // remove item from array and shorten the array
+      // remove item from array and shortens the array
       posts.splice(position, 1);
       deleted = true;
       return true;
